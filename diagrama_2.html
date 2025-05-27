@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Auditoría MySQL - Diagrama Triangular</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #9ab7e2;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+            color: #000000;
+        }
+
+        .diagram {
+            position: relative;
+            width: 600px;
+            height: 520px;
+            margin: 50px auto;
+        }
+
+        .node {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background-color: #5ce9f3;
+            border: 2px solid #161616;
+            border-radius: 20px;
+            text-align: center;
+            padding: 10px;
+            box-shadow: 0 6px 12px rgb(255, 253, 253);
+            transition: transform 0.5s ease;
+            font-size: 14px;
+            color: #141414;
+        }
+
+        .node img {
+            width: 60px;
+            height: 60px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .center-node {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            width: 140px;
+            height: 140px;
+            font-weight: bold;
+            font-size: 18px;
+            padding-top: 30px;
+            color: #1a73e8;
+        }
+
+        .top-node {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .left-node {
+            bottom: 0;
+            left: 0;
+        }
+
+        .right-node {
+            bottom: 0;
+            right: 0;
+        }
+
+        svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .arrow-path {
+            stroke: #1a73e8;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+            stroke-dasharray: 5;
+            animation: dash 2s linear infinite;
+        }
+
+        @keyframes dash {
+            0% {
+                stroke-dashoffset: 0;
+            }
+
+            100% {
+                stroke-dashoffset: -10;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Herramientas y funciones </h1>
+
+    <div class="diagram">
+
+        <!-- Flechas SVG -->
+        <svg>
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#1a73e8" />
+                </marker>
+            </defs>
+            <line class="arrow-path" x1="300" y1="260" x2="300" y2="80"></line>
+            <line class="arrow-path" x1="300" y1="260" x2="90" y2="440"></line>
+            <line class="arrow-path" x1="300" y1="260" x2="510" y2="440"></line>
+        </svg>
+
+        <!-- Nodo superior -->
+        <div class="node top-node" id="topNode">
+            <img src="https://cdn-icons-png.freepik.com/256/16867/16867088.png?ga=GA1.1.1873858360.1748207979&semt=ais_hybrid"
+                alt="Enterprise Audit">
+            <strong>MySQL Enterprise Audit</strong>
+            <p>Plugin de pago, pero hay alternativas.</p>
+        </div>
+
+        <!-- Nodo inferior izquierdo -->
+        <div class="node left-node" id="leftNode">
+            <img src="https://cdn-icons-png.freepik.com/256/12492/12492337.png?ga=GA1.1.1873858360.1748207979&semt=ais_hybrid"
+                alt="Percona Audit Log">
+            <strong>Percona Server + audit_log</strong>
+            <p>Plugin gratuito para auditoría en MySQL.</p>
+        </div>
+
+        <!-- Nodo inferior derecho -->
+        <div class="node right-node" id="rightNode">
+            <img src="https://cdn-icons-png.freepik.com/256/4319/4319258.png?ga=GA1.1.1873858360.1748207979&semt=ais_hybrid"
+                alt="Logs">
+            <strong>general_log y slow_query_log</strong>
+            <p>Uso para monitoreo básico de consultas.</p>
+        </div>
+
+    </div>
+
+    <script>
+            // Función para animar oscilación horizontal con zoom
+            function animateNode(node, delay) {
+                let angle = 0;
+                let scale = 1;
+                let direction = 1;
+
+                function frame() {
+                    angle += 0.03;
+                    let offsetX = Math.sin(angle) * 5;
+                    scale += 0.005 * direction;
+                    if (scale > 1.05 || scale < 0.95) direction *= -1;
+
+                    node.style.transform = `translateX(${offsetX}px) scale(${scale})`;
+                    requestAnimationFrame(frame);
+                }
+
+                setTimeout(() => requestAnimationFrame(frame), delay);
+            }
+
+            // Función para animación vertical con brillo
+            function animateTopNode(node) {
+                let angle = 0;
+                let scale = 1;
+                let direction = 1;
+
+                function frame() {
+                    angle += 0.03;
+                    let offsetY = Math.sin(angle) * 4;
+                    scale += 0.003 * direction;
+                    if (scale > 1.03 || scale < 0.97) direction *= -1;
+
+                    node.style.transform = `translateY(${offsetY}px) scale(${scale})`;
+                    node.style.boxShadow = `0 0 ${5 + Math.abs(offsetY)}px rgba(26, 115, 232, 0.4)`;
+                    requestAnimationFrame(frame);
+                }
+
+                requestAnimationFrame(frame);
+            }
+
+            // Aplica animaciones
+            animateTopNode(document.getElementById('topNode'));
+            animateNode(document.getElementById('leftNode'), 500);
+            animateNode(document.getElementById('rightNode'), 1000);
+        </script>
+
+</body>
+
+</html>
