@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Seguridad Práctica en Bases de Datos</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #00ffff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: #00aaaa;
+        }
+
+        .nodo {
+            background-color: #111;
+            border: 2px solid #00ffff;
+            border-radius: 12px;
+            width: 130px;
+            padding: 10px;
+            font-size: 11px;
+            text-align: center;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .subtemas {
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .subtema {
+            background-color: #222;
+            border-left: 3px solid #00ffff;
+            padding: 4px 6px;
+            text-align: left;
+            font-size: 10px;
+        }
+
+        .info-box {
+            position: relative;
+            width: 320px;
+            height: 80px;
+            background: #005baa;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 10px 10px 80px;
+            box-sizing: border-box;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .info-box img {
+            position: absolute;
+            left: 10px;
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            border-radius: 6px;
+        }
+
+        .info-box a {
+            margin-left: auto;
+            background: white;
+            color: #005baa;
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .info-box a:hover {
+            background: #003f7f;
+            color: white;
+        }
+
+        /* Contenedor para cada cuadro y su ejemplo */
+        .contenedor-seccion {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 100px;
+            position: relative;
+            min-height: 150px;
+        }
+
+        /* SVG para las flechas curvas entre cuadros y ejemplos */
+        .svg-flecha-curva {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .flecha-curva {
+            stroke: #00ffff;
+            stroke-width: 3;
+            stroke-dasharray: 8, 4;
+            fill: none;
+            marker-end: url(#flecha);
+            opacity: 0.9;
+        }
+
+        .punto-flecha {
+            fill: #00ffff;
+            filter: drop-shadow(0 0 3px #00ffff);
+        }
+
+        /* Estilos específicos para nodos más anchos */
+        .nodo-ancho {
+            width: 140px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Definición global del marcador de flecha -->
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <marker id="flecha" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L10,3 z" fill="#00ffff" />
+            </marker>
+        </defs>
+    </svg>
+
+    <h1>Seguridad Práctica en Bases de Datos</h1>
+
+    <!-- 1. Infraestructura Segura -->
+    <div class="contenedor-seccion">
+        <div class="nodo" id="nodo-infraestructura">
+            <strong>1. Infraestructura Segura</strong>
+            <div class="subtemas">
+                <div class="subtema">Ubuntu Server / CentOS</div>
+                <div class="subtema">Estabilidad y seguridad</div>
+                <div class="subtema">UFW, iptables, SELinux</div>
+            </div>
+        </div>
+
+        <svg class="svg-flecha-curva" id="svg-infraestructura"></svg>
+
+        <div class="info-box" id="info-infraestructura">
+            <img src="diagrama_2.gif".gif" alt="GIF ilustrativo" />
+            <div>Ej: Infraestructura</div>
+            <a href="infraestructura.html">Ver diagrama</a>
+        </div>
+    </div>
+
+    <!-- 2. Arquitectura -->
+    <div class="contenedor-seccion">
+        <div class="nodo" id="nodo-arquitectura">
+            <strong>2. Arquitectura</strong>
+            <div class="subtemas">
+                <div class="subtema">Estructura general de seguridad</div>
+            </div>
+        </div>
+
+        <svg class="svg-flecha-curva" id="svg-arquitectura"></svg>
+
+        <div class="info-box" id="info-arquitectura">
+            <img src="arquitectura.gif" alt="GIF ilustrativo" />
+            <div>Ej: Arquitectura</div>
+            <a href="Arquitectura_digram4.html">Ver diagrama</a>
+        </div>
+    </div>
+
+    <!-- 3. Componentes -->
+    <div class="contenedor-seccion">
+        <div class="nodo" id="nodo-componentes">
+            <strong>3. Componentes</strong>
+            <div class="subtemas">
+                <div class="subtema">Usuarios acceden vía app web</div>
+                <div class="subtema">WAF filtra tráfico malicioso</div>
+                <div class="subtema">Servidor aloja motor de BD</div>
+                <div class="subtema">BD devuelve resultados</div>
+            </div>
+        </div>
+
+        <svg class="svg-flecha-curva" id="svg-componentes"></svg>
+
+        <div class="info-box" id="info-componentes">
+            <img src="diagrama_2.gif" alt="GIF ilustrativo" />
+            <div>Ej: Componentes</div>
+            <a href="componentes.html">Ver diagrama</a>
+        </div>
+    </div>
+
+    <!-- 4. WAF y su Función -->
+    <div class="contenedor-seccion">
+        <div class="nodo" id="nodo-waf">
+            <strong>4. WAF y su Función</strong>
+            <div class="subtemas">
+                <div class="subtema">Bloquea SQLi, XSS, endpoints</div>
+                <div class="subtema">Protección indirecta de BD</div>
+                <div class="subtema">Ej: ModSecurity, Cloudflare</div>
+            </div>
+        </div>
+
+        <svg class="svg-flecha-curva" id="svg-waf"></svg>
+
+        <div class="info-box" id="info-waf">
+            <img src=".gif" alt="GIF ilustrativo" />
+            <div>Ej: WAF</div>
+            <a href="waf.html">Ver diagrama</a>
+        </div>
+    </div>
+
+    <!-- 5. Auditoría y Trazabilidad -->
+    <div class="contenedor-seccion">
+        <div class="nodo" id="nodo-auditoria">
+            <strong>5. Auditoría y Trazabilidad</strong>
+            <div class="subtemas">
+                <div class="subtema">Registra actividad de usuarios</div>
+                <div class="subtema">Errores y cambios sensibles</div>
+                <div class="subtema">Usa plugins o logs nativos</div>
+            </div>
+        </div>
+
+        <svg class="svg-flecha-curva" id="svg-auditoria"></svg>
+
+        <div class="info-box" id="info-auditoria">
+            <img src="DIAGRAMA.gif" alt="GIF ilustrativo" />
+            <div>Ej: Auditoria</div>
+            <a href="diagrama.html">Ver diagrama</a>
+        </div>
+    </div>
+
+    <!-- 6. Trazabilidad con MySQL -->
+    <div class="contenedor-seccion">
+        <div class="nodo" id="nodo-trazabilidad">
+            <strong>6. Trazabilidad con MySQL</strong>
+            <div class="subtemas" style="margin-top: 10px;">
+                <div class="subtema">Consulta ejemplo:</div>
+                <div class="subtema">SELECT * FROM mysql.general_log</div>
+                <div class="subtema">WHERE user_host LIKE '%usuario%'</div>
+                <div class="subtema">AND argument LIKE '%DELETE%';</div>
+            </div>
+        </div>
+
+        <svg class="svg-flecha-curva" id="svg-trazabilidad"></svg>
+
+        <div class="info-box" id="info-trazabilidad">
+            <img src="trazabilidad.gif" alt="GIF ilustrativo" />
+            <div>Ej: Trazabilidad</div>
+            <a href="trazabilidad.html">Ver diagrama</a>
+        </div>
+    </div>
+
+    <!-- 7. Herramientas y funciones -->
+    <div class="contenedor-seccion">
+        <div class="nodo" id="nodo-herramientas">
+            <strong>7. Herramientas y funciones</strong>
+            <div class="subtemas">
+                <div class="subtema">MySQL Enterprise Audit Plugin (de pago, pero hay alternativas)</div>
+                <div class="subtema">Percona Server for MySQL + audit_log plugin (gratuito)</div>
+                <div class="subtema">Uso de general_log y slow_query_log para monitoreo básico</div>
+            </div>
+        </div>
+
+        <svg class="svg-flecha-curva" id="svg-herramientas"></svg>
+
+        <div class="info-box" id="info-herramientas">
+            <img src="herramientas.gif" alt="GIF ilustrativo" />
+            <div>Ej: Herramientas</div>
+            <a href="diagrama_2.html">Ver diagrama</a>
+        </div>
+    </div>
+
+    <!-- 8. Percona Toolkit -->
+    <div class="contenedor-seccion">
+        <div class="nodo nodo-ancho" id="nodo-percona">
+            <strong>8. Percona Toolkit</strong>
+            <div class="subtemas" style="margin-top: 10px;">
+                <div class="subtema">pt-query-digest (auditoría)</div>
+                <div class="subtema">pt-table-checksum (comparación)</div>
+                <div class="subtema">Consulta lenta / replicación</div>
+            </div>
+        </div>
+
+        <svg class="svg-flecha-curva" id="svg-percona"></svg>
+
+        <div class="info-box" id="info-percona">
+            <img src="diagrama_2.gif" alt="GIF ilustrativo" />
+            <div>Ej: PERCONA Toolkit</div>
+            <a href="diagrama_3.html">Ver diagrama</a>
+        </div>
+    </div>
+
+    <script>
+        // Función para crear flechas curvas entre nodos y ejemplos
+        function crearFlechasCurvas() {
+            // Configuración para cada par nodo-ejemplo
+            const conexiones = [
+                {
+                    nodoId: 'nodo-infraestructura',
+                    infoId: 'info-infraestructura',
+                    svgId: 'svg-infraestructura'
+                },
+                {
+                    nodoId: 'nodo-arquitectura',
+                    infoId: 'info-arquitectura',
+                    svgId: 'svg-arquitectura'
+                },
+                {
+                    nodoId: 'nodo-componentes',
+                    infoId: 'info-componentes',
+                    svgId: 'svg-componentes'
+                },
+                {
+                    nodoId: 'nodo-waf',
+                    infoId: 'info-waf',
+                    svgId: 'svg-waf'
+                },
+                {
+                    nodoId: 'nodo-auditoria',
+                    infoId: 'info-auditoria',
+                    svgId: 'svg-auditoria'
+                },
+                {
+                    nodoId: 'nodo-trazabilidad',
+                    infoId: 'info-trazabilidad',
+                    svgId: 'svg-trazabilidad'
+                },
+                {
+                    nodoId: 'nodo-herramientas',
+                    infoId: 'info-herramientas',
+                    svgId: 'svg-herramientas'
+                },
+                {
+                    nodoId: 'nodo-percona',
+                    infoId: 'info-percona',
+                    svgId: 'svg-percona'
+                },
+                {
+                    nodoId: 'nodo-resumen',
+                    infoId: 'info-resumen',
+                    svgId: 'svg-resumen'
+                }
+            ];
+
+            conexiones.forEach(conexion => {
+                const nodo = document.getElementById(conexion.nodoId);
+                const info = document.getElementById(conexion.infoId);
+                const svg = document.getElementById(conexion.svgId);
+
+                if (!nodo || !info || !svg) return;
+
+                // Obtener contenedor padre
+                const contenedor = svg.parentElement;
+                const rectContenedor = contenedor.getBoundingClientRect();
+
+                // Obtener posiciones relativas al contenedor
+                const rectNodo = nodo.getBoundingClientRect();
+                const rectInfo = info.getBoundingClientRect();
+
+                // Calcular posiciones relativas
+                const startX = rectNodo.left - rectContenedor.left + rectNodo.width;
+                const startY = rectNodo.top - rectContenedor.top + rectNodo.height / 2;
+                const endX = rectInfo.left - rectContenedor.left;
+                const endY = rectInfo.top - rectContenedor.top + rectInfo.height / 2;
+
+                // Limpiar SVG
+                svg.innerHTML = '';
+
+                // Crear curva suave
+                const midX = startX + (endX - startX) * 0.5;
+                const curveOffset = 30; // Curvatura hacia arriba
+                const midY = Math.min(startY, endY) - curveOffset;
+
+                const pathData = `M ${startX} ${startY} Q ${midX} ${midY} ${endX} ${endY}`;
+
+                // Crear la línea curva
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', pathData);
+                path.setAttribute('class', 'flecha-curva');
+                svg.appendChild(path);
+
+                // Crear punto animado
+                const punto = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                punto.setAttribute('r', '3');
+                punto.setAttribute('class', 'punto-flecha');
+                svg.appendChild(punto);
+
+                // Animar el punto
+                let progress = 0;
+                function animarPuntoFlecha() {
+                    progress = (progress + 0.006) % 1;
+                    const totalLength = path.getTotalLength();
+                    const pointAtLength = path.getPointAtLength(progress * totalLength);
+                    punto.setAttribute('cx', pointAtLength.x);
+                    punto.setAttribute('cy', pointAtLength.y);
+                    requestAnimationFrame(animarPuntoFlecha);
+                }
+
+                // Animar la línea punteada
+                let dashOffset = 0;
+                function animarLineaFlecha() {
+                    dashOffset = (dashOffset - 0.6) % 12;
+                    path.setAttribute('stroke-dashoffset', dashOffset);
+                    requestAnimationFrame(animarLineaFlecha);
+                }
+
+                animarPuntoFlecha();
+                animarLineaFlecha();
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            setTimeout(() => {
+                crearFlechasCurvas();
+            }, 100);
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                crearFlechasCurvas();
+            }, 200);
+        });
+    </script>
+
+</body>
+
+</html>

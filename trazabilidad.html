@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cuadro Informativo: Trazabilidad con MySQL</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Partículas de fondo animadas */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cuadro {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 30px;
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+            transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .cuadro::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00aaff, #0077cc, #ff6b6b, #4ecdc4);
+            background-size: 300% 300%;
+            border-radius: 22px;
+            z-index: -1;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .cuadro.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .cuadro:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #0077cc;
+            margin-top: 0;
+            font-size: 2em;
+            text-align: center;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInLeft 1s ease forwards;
+            animation-delay: 0.5s;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00aaff, #0077cc);
+            animation: expandLine 1s ease forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes expandLine {
+            to {
+                width: 80px;
+            }
+        }
+
+        p {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 1.2s;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .imagen {
+            width: 40%;
+            border-radius: 15px;
+            margin: 20px auto;
+            display: block;
+            opacity: 0;
+            transform: rotateY(90deg) scale(0.8);
+            animation: flipIn 1s ease forwards;
+            animation-delay: 1.5s;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .imagen:hover {
+            transform: rotateY(0deg) scale(1.1);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+        }
+
+        @keyframes flipIn {
+            to {
+                opacity: 1;
+                transform: rotateY(0deg) scale(1);
+            }
+        }
+
+        pre {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #00ff88;
+            padding: 20px;
+            border-left: 5px solid #00aaff;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+            opacity: 0;
+            transform: translateX(50px);
+            animation: slideInRight 1s ease forwards;
+            animation-delay: 1.8s;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.1);
+        }
+
+        pre::before {
+            content: '> Terminal MySQL';
+            position: absolute;
+            top: -25px;
+            left: 0;
+            color: #00aaff;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        code {
+            background: rgba(0, 170, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #0077cc;
+            font-weight: bold;
+        }
+
+        /* Efecto de teclas que se escriben */
+        .typing {
+            overflow: hidden;
+            border-right: 2px solid #00ff88;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: #00ff88;
+            }
+        }
+
+        /* Botón interactivo */
+        .action-btn {
+            background: linear-gradient(45deg, #00aaff, #0077cc);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: bounceIn 1s ease forwards;
+            animation-delay: 2.8s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 170, 255, 0.4);
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.3);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-10px) scale(1.05);
+            }
+
+            70% {
+                transform: translateY(5px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Efecto de ondas al hacer clic */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 170, 255, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Indicador de progreso animado */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 170, 255, 0.2);
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 3s;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00aaff, #0077cc);
+            width: 0;
+            border-radius: 2px;
+            animation: fillProgress 2s ease forwards;
+            animation-delay: 3.2s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fillProgress {
+            to {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cuadro" id="cuadroInfo">
+        <h2>6. Trazabilidad con MySQL</h2>
+        <p>La trazabilidad permite rastrear acciones realizadas por los usuarios en la base de datos. Por ejemplo,
+            podemos saber si un usuario ha ejecutado comandos <code>DELETE</code>.</p>
+
+        <pre id="sqlCode">
+SELECT * FROM mysql.general_log
+WHERE user_host LIKE '%usuario%'
+AND argument LIKE '%DELETE%';
+        </pre>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <img class="imagen" src="https://cdn-icons-png.flaticon.com/128/17810/17810652.png" alt="Trazabilidad MySQL" />
+
+        <button class="action-btn" onclick="ejecutarConsulta()">
+            🔍 Ejecutar Consulta
+        </button>
+    </div>
+
+    <script>
+        // Crear partículas animadas de fondo
+        function createParticles() {
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+
+                // Animación de movimiento
+                particle.style.animation = `float ${Math.random() * 6 + 4}s ease-in-out infinite`;
+
+                document.body.appendChild(particle);
+            }
+        }
+
+        // Agregar CSS para animación de partículas
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+                50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Efecto de escritura en el código SQL
+        function typeWriter(element, text, speed = 50) {
+            element.innerHTML = '';
+            element.style.width = '0';
+            let i = 0;
+            const timer = setInterval(() => {
+                element.innerHTML += text.charAt(i);
+                i++;
+                if (i >= text.length) {
+                    clearInterval(timer);
+                    element.style.borderRight = 'none';
+                }
+            }, speed);
+        }
+
+        // Efecto ripple al hacer clic
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+
+            button.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        // Función para simular ejecución de consulta
+        function ejecutarConsulta() {
+            const btn = document.querySelector('.action-btn');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '⏳ Ejecutando...';
+            btn.style.background = 'linear-gradient(45deg, #ff6b6b, #ee5a24)';
+
+            setTimeout(() => {
+                btn.innerHTML = '✅ Consulta Completada';
+                btn.style.background = 'linear-gradient(45deg, #00d2d3, #54a0ff)';
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'linear-gradient(45deg, #00aaff, #0077cc)';
+                }, 2000);
+            }, 1500);
+        }
+
+        // Efecto parallax suave al mover el mouse
+        document.addEventListener('mousemove', (e) => {
+            const cuadro = document.getElementById('cuadroInfo');
+            const x = (e.clientX / window.innerWidth) * 10 - 5;
+            const y = (e.clientY / window.innerHeight) * 10 - 5;
+
+            cuadro.style.transform += ` rotateX(${y * 0.5}deg) rotateY(${x * 0.5}deg)`;
+        });
+
+        // Inicializar animaciones
+        window.addEventListener('load', () => {
+            const cuadro = document.getElementById('cuadroInfo');
+
+            // Crear partículas de fondo
+            createParticles();
+
+            // Animación de entrada principal
+            setTimeout(() => {
+                cuadro.classList.add('visible');
+            }, 300);
+
+            // Agregar event listeners
+            document.querySelector('.action-btn').addEventListener('click', createRipple);
+
+            // Efecto hover en el cuadro
+            cuadro.addEventListener('mouseenter', () => {
+                cuadro.style.background = 'rgba(255, 255, 255, 1)';
+            });
+
+            cuadro.addEventListener('mouseleave', () => {
+                cuadro.style.background = 'rgba(255, 255, 255, 0.95)';
+            });
+        });
+
+        // Animación de scroll suave
+        window.addEventListener('scroll', () => {
+            const cuadro = document.getElementById('cuadroInfo');
+            const scrolled = window.pageYOffset;
+            cuadro.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+    </script>
+
+</body>
+
+</html>

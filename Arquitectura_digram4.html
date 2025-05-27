@@ -1,0 +1,866 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa de Red</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-align: center;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow-x: auto;
+            animation: gradientShift 15s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            33% {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            }
+
+            66% {
+                background: linear-gradient(135deg, #667eea 0%, #8e2de2 100%);
+            }
+        }
+
+        .header h1 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+
+            0%,
+            100% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+
+            50% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .network-map {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+            flex-wrap: nowrap;
+            min-width: 1000px;
+        }
+
+        .node {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 20px;
+            width: 160px;
+            height: 120px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            animation: slideInUp 0.8s ease-out both;
+            animation-delay: calc(var(--delay) * 0.2s);
+        }
+
+        .node:nth-child(1) {
+            --delay: 1;
+        }
+
+        .node:nth-child(3) {
+            --delay: 2;
+        }
+
+        .node:nth-child(5) {
+            --delay: 3;
+        }
+
+        .node:nth-child(7) {
+            --delay: 4;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .node:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            border-color: #4CAF50;
+            animation: nodeGlow 0.5s ease-in-out;
+        }
+
+        @keyframes nodeGlow {
+            0% {
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            }
+
+            50% {
+                box-shadow: 0 15px 35px rgba(76, 175, 80, 0.4), 0 0 20px rgba(76, 175, 80, 0.3);
+            }
+
+            100% {
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        .node-icon img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            animation: iconFloat 4s ease-in-out infinite;
+            animation-delay: calc(var(--delay) * 0.5s);
+        }
+
+        @keyframes iconFloat {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-5px) rotate(5deg);
+            }
+
+            50% {
+                transform: translateY(-3px) rotate(0deg);
+            }
+
+            75% {
+                transform: translateY(-7px) rotate(-5deg);
+            }
+        }
+
+        .node:hover .node-icon img {
+            transform: scale(1.2) rotate(10deg);
+            animation-play-state: paused;
+        }
+
+        .node-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+            text-align: center;
+            animation: textPulse 3s ease-in-out infinite;
+            animation-delay: calc(var(--delay) * 0.3s);
+        }
+
+        @keyframes textPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                color: #333;
+            }
+
+            50% {
+                opacity: 0.8;
+                color: #4CAF50;
+            }
+        }
+
+        .connection-line {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #2196F3, #4CAF50);
+            background-size: 200% 100%;
+            animation: flowAnimation 2s ease-in-out infinite, lineGrow 1s ease-out both;
+            position: relative;
+            margin: 0 10px;
+            animation-delay: calc(var(--line-delay) * 0.3s);
+        }
+
+        .connection-line:nth-of-type(2) {
+            --line-delay: 1;
+        }
+
+        .connection-line:nth-of-type(4) {
+            --line-delay: 2;
+        }
+
+        .connection-line:nth-of-type(6) {
+            --line-delay: 3;
+        }
+
+        @keyframes lineGrow {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+
+        .connection-line::before {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid #2196F3;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            animation: arrowPulse 2s ease-in-out infinite, arrowBounce 1s ease-out both;
+            animation-delay: calc(var(--line-delay) * 0.3s + 0.5s);
+        }
+
+        @keyframes arrowBounce {
+            from {
+                transform: translateY(-50%) scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(-50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes flowAnimation {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 0%;
+            }
+
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        @keyframes arrowPulse {
+
+            0%,
+            100% {
+                border-left-color: #2196F3;
+                transform: translateY(-50%) scale(1);
+            }
+
+            50% {
+                border-left-color: #4CAF50;
+                transform: translateY(-50%) scale(1.2);
+            }
+        }
+
+        .info-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .info-panel.active {
+            right: 0;
+            animation: panelSlideIn 0.5s ease-out;
+        }
+
+        @keyframes panelSlideIn {
+            from {
+                right: -400px;
+                opacity: 0;
+            }
+
+            to {
+                right: 0;
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            animation: buttonPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes buttonPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+            }
+        }
+
+        .close-btn:hover {
+            background: #cc0000;
+            transform: scale(1.2) rotate(90deg);
+        }
+
+        .info-content h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-content h2 {
+            color: #555;
+            margin-top: 20px;
+            animation: fadeInLeft 0.5s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .info-content h3 {
+            color: #666;
+            margin-top: 15px;
+            animation: fadeInRight 0.5s ease-out 0.4s both;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .info-content ul {
+            text-align: left;
+            padding-left: 20px;
+            animation: fadeIn 0.5s ease-out 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .info-content li {
+            margin: 5px 0;
+            color: #444;
+            animation: listItemSlide 0.3s ease-out both;
+            animation-delay: calc(var(--item-delay) * 0.1s);
+        }
+
+        .info-content li:nth-child(1) {
+            --item-delay: 1;
+        }
+
+        .info-content li:nth-child(2) {
+            --item-delay: 2;
+        }
+
+        .info-content li:nth-child(3) {
+            --item-delay: 3;
+        }
+
+        .info-content li:nth-child(4) {
+            --item-delay: 4;
+        }
+
+        @keyframes listItemSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.5;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite, particleGlow 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes particleGlow {
+
+            0%,
+            100% {
+                background: rgba(255, 255, 255, 0.5);
+                box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+            }
+
+            50% {
+                background: rgba(255, 255, 255, 0.8);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .network-map {
+                flex-wrap: wrap;
+                min-width: auto;
+            }
+
+            .connection-line {
+                transform: rotate(90deg);
+                margin: 20px 0;
+                animation: flowAnimation 2s ease-in-out infinite, lineGrowVertical 1s ease-out both;
+            }
+
+            @keyframes lineGrowVertical {
+                from {
+                    height: 0;
+                    opacity: 0;
+                }
+
+                to {
+                    height: 4px;
+                    opacity: 1;
+                }
+            }
+        }
+
+        /* Animaciones adicionales para elementos específicos */
+        .usuario {
+            animation-delay: 0.2s;
+        }
+
+        .navegador {
+            animation-delay: 0.4s;
+        }
+
+        .firewall {
+            animation-delay: 0.6s;
+        }
+
+        .servidor {
+            animation-delay: 0.8s;
+        }
+
+        /* Efecto de respiración para todo el contenedor */
+        .network-map {
+            animation: containerBreath 8s ease-in-out infinite;
+        }
+
+        @keyframes containerBreath {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>ARQUITECTURA DE SISTEMAS</h1>
+        <p>Los componentes clave de un sistema web</p>
+    </div>
+
+    <div class="network-map">
+        <div class="node usuario" onclick="showInfo('usuario')">
+            <div class="node-icon">
+                <img src="https://img.icons8.com/color/48/user.png" alt="Usuario">
+            </div>
+            <div class="node-title">Usuario</div>
+        </div>
+
+        <div class="connection-line"></div>
+
+        <div class="node navegador" onclick="showInfo('webpage')">
+            <div class="node-icon">
+                <img src="https://img.icons8.com/color/48/chrome.png" alt="Navegador Web">
+            </div>
+            <div class="node-title">Navegador Web</div>
+        </div>
+
+        <div class="connection-line"></div>
+
+        <div class="node firewall" onclick="showInfo('firewall')">
+            <div class="node-icon">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnikx3vezXgTW8xB-09w9lfN0ca0v4MMLjsg&s"
+                    alt="Firewall">
+            </div>
+            <div class="node-title">Firewall</div>
+        </div>
+
+        <div class="connection-line"></div>
+
+        <div class="node servidor" onclick="showInfo('servidor')">
+            <div class="node-icon">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9QuFMQ6Grva33B51BKzww81gF9mT6anZ3Dg&s"
+                    alt="Servidor">
+            </div>
+            <div class="node-title">Servidor Web</div>
+        </div>
+    </div>
+
+    <!-- Panel de información -->
+    <div id="infoPanel" class="info-panel">
+        <button class="close-btn" onclick="closeInfo()">×</button>
+        <div id="infoContent" class="info-content">
+            <!-- El contenido se carga dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        const infoData = {
+            arquitectura: {
+                title: "ARQUITECTURA DE SISTEMAS",
+                content: `
+                    <h2>Definición</h2>
+                    <p>La arquitectura de sistemas es el diseño conceptual que define la estructura y comportamiento de un sistema de software.</p>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/target.png" alt="Target"> Objetivos Principales:</h3>
+                    <ul>
+                        <li>Escalabilidad y rendimiento</li>
+                        <li>Seguridad y confiabilidad</li>
+                        <li>Mantenibilidad</li>
+                        <li>Disponibilidad 24/7</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/checklist.png" alt="Checklist"> Patrones Comunes:</h3>
+                    <ul>
+                        <li>Arquitectura en capas</li>
+                        <li>Microservicios</li>
+                        <li>Cliente-Servidor</li>
+                        <li>Event-Driven</li>
+                    </ul>
+                `
+            },
+            usuario: {
+                title: "<img src='https://img.icons8.com/color/32/user.png' alt='User'> USUARIO",
+                content: `
+                    <h2>El Usuario Final</h2>
+                    <p>Es la persona que interactúa con el sistema a través de interfaces gráficas o aplicaciones.</p>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/search.png" alt="Search"> Características:</h3>
+                    <ul>
+                        <li>Punto de entrada al sistema</li>
+                        <li>Genera solicitudes y peticiones</li>
+                        <li>Consume servicios y contenido</li>
+                        <li>Proporciona datos de entrada</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/smartphone.png" alt="Mobile"> Tipos de Usuarios:</h3>
+                    <ul>
+                        <li>Usuario web (navegador)</li>
+                        <li>Usuario móvil (app)</li>
+                        <li>Usuario API (sistemas)</li>
+                        <li>Administrador del sistema</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/lightning-bolt.png" alt="Lightning"> Experiencia del Usuario:</h3>
+                    <ul>
+                        <li>Interfaz intuitiva</li>
+                        <li>Tiempo de respuesta rápido</li>
+                        <li>Disponibilidad constante</li>
+                        <li>Seguridad de datos</li>
+                    </ul>
+                `
+            },
+            webpage: {
+                title: "<img src='https://img.icons8.com/color/32/chrome.png' alt='Web'> WEB PAGE / WEB APP",
+                content: `
+                    <h2>Interfaz de Usuario</h2>
+                    <p>La capa de presentación que permite la interacción entre usuarios y el sistema backend.</p>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/paint-palette.png" alt="Palette"> Componentes Frontend:</h3>
+                    <ul>
+                        <li>HTML - Estructura</li>
+                        <li>CSS - Estilos y diseño</li>
+                        <li>JavaScript - Interactividad</li>
+                        <li>Frameworks (React, Vue, Angular)</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/checklist.png" alt="Checklist"> Funcionalidades:</h3>
+                    <ul>
+                        <li>Formularios de entrada</li>
+                        <li>Navegación y menús</li>
+                        <li>Visualización de datos</li>
+                        <li>Autenticación de usuarios</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/smartphone.png" alt="Mobile"> Tipos de Aplicaciones:</h3>
+                    <ul>
+                        <li>SPA (Single Page Application)</li>
+                        <li>PWA (Progressive Web App)</li>
+                        <li>Aplicaciones híbridas</li>
+                        <li>Sitios web estáticos</li>
+                    </ul>
+                `
+            },
+            firewall: {
+                title: "<img src='https://img.icons8.com/color/32/firewall.png' alt='Firewall'> WEB APPLICATION FIREWALL",
+                content: `
+                    <h2>Protección y Seguridad</h2>
+                    <p>Sistema de seguridad que filtra, monitorea y bloquea tráfico HTTP/HTTPS malicioso.</p>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/lock.png" alt="Lock"> Funciones Principales:</h3>
+                    <ul>
+                        <li>Filtrado de tráfico malicioso</li>
+                        <li>Prevención de ataques DDoS</li>
+                        <li>Bloqueo de SQL Injection</li>
+                        <li>Protección XSS</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/warning-shield.png" alt="Warning"> Amenazas que Detecta:</h3>
+                    <ul>
+                        <li>Ataques de fuerza bruta</li>
+                        <li>Malware y virus</li>
+                        <li>Bots maliciosos</li>
+                        <li>Intentos de intrusión</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/bar-chart.png" alt="Chart"> Tipos de WAF:</h3>
+                    <ul>
+                        <li>Cloud-based (Cloudflare, AWS)</li>
+                        <li>On-premises (F5, Imperva)</li>
+                        <li>Híbrido</li>
+                        <li>Open source (ModSecurity)</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/checkmark.png" alt="Check"> Beneficios:</h3>
+                    <ul>
+                        <li>Cumplimiento normativo</li>
+                        <li>Reducción de riesgos</li>
+                        <li>Monitoreo en tiempo real</li>
+                        <li>Reportes de seguridad</li>
+                    </ul>
+                `
+            },
+            servidor: {
+                title: "<img src='https://img.icons8.com/color/32/server.png' alt='Server'> SERVIDOR / BASE DE DATOS",
+                content: `
+                    <h2>Backend y Almacenamiento</h2>
+                    <p>El núcleo del sistema que procesa lógica de negocio y almacena información.</p>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/settings.png" alt="Settings"> Servidor de Aplicaciones:</h3>
+                    <ul>
+                        <li>Procesamiento de peticiones</li>
+                        <li>Lógica de negocio</li>
+                        <li>APIs y servicios web</li>
+                        <li>Autenticación y autorización</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/database.png" alt="Database"> Base de Datos:</h3>
+                    <ul>
+                        <li>Almacenamiento persistente</li>
+                        <li>Consultas y transacciones</li>
+                        <li>Integridad de datos</li>
+                        <li>Backup y recuperación</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/wrench.png" alt="Wrench"> Tecnologías Comunes:</h3>
+                    <ul>
+                        <li>Servidores: Apache, Nginx, IIS</li>
+                        <li>Lenguajes: Java, Python, Node.js, C#</li>
+                        <li>BD Relacionales: MySQL, PostgreSQL</li>
+                        <li>BD NoSQL: MongoDB, Redis</li>
+                    </ul>
+                    
+                    <h3><img src="https://img.icons8.com/color/24/rocket.png" alt="Rocket"> Arquitecturas:</h3>
+                    <ul>
+                        <li>Monolítica</li>
+                        <li>Microservicios</li>
+                        <li>Serverless</li>
+                        <li>Containerizada (Docker/K8s)</li>
+                    </ul>
+                `
+            }
+        };
+
+        function showInfo(type) {
+            const panel = document.getElementById('infoPanel');
+            const content = document.getElementById('infoContent');
+
+            if (infoData[type]) {
+                content.innerHTML = `
+                    <h1>${infoData[type].title}</h1>
+                    ${infoData[type].content}
+                `;
+                panel.classList.add('active');
+            }
+        }
+
+        function closeInfo() {
+            document.getElementById('infoPanel').classList.remove('active');
+        }
+
+        // Animación de partículas de fondo mejorada
+        function createParticles() {
+            const particleCount = 30;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.cssText = `
+                    top: ${Math.random() * 100}vh;
+                    left: ${Math.random() * 100}vw;
+                    animation-duration: ${5 + Math.random() * 10}s;
+                    animation-delay: ${Math.random() * 5}s;
+                `;
+                document.body.appendChild(particle);
+            }
+        }
+
+        // Inicializar partículas
+        createParticles();
+
+        // Cerrar panel con tecla Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeInfo();
+            }
+        });
+
+        // Añadir efecto de clic mejorado en los nodos
+        document.querySelectorAll('.node').forEach(node => {
+            node.addEventListener('click', function () {
+                this.style.transform = 'scale(0.95) rotate(-2deg)';
+                this.style.boxShadow = '0 5px 15px rgba(76, 175, 80, 0.6)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                }, 200);
+            });
+
+            // Efecto de entrada al hacer hover
+            node.addEventListener('mouseenter', function () {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 10);
+            });
+        });
+
+        // Animación de entrada secuencial para los nodos
+        window.addEventListener('load', function () {
+            const nodes = document.querySelectorAll('.node');
+            const lines = document.querySelectorAll('.connection-line');
+
+            nodes.forEach((node, index) => {
+                node.style.animationDelay = `${index * 0.2}s`;
+            });
+
+            lines.forEach((line, index) => {
+                line.style.animationDelay = `${(index + 1) * 0.3}s`;
+            });
+        });
+    </script>
+</body>
+
+</html>

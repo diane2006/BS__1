@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapa Mental - Componentes App Web</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .mapa-container {
+      position: relative;
+      width: 1000px;
+      height: 300px;
+    }
+    
+    .nodo {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(145deg, #ffffff, #f0f0f0);
+      border-radius: 50%;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      opacity: 0;
+      transform: scale(0.5) translateY(50px);
+      animation: aparecer 1s ease-out forwards;
+    }
+    
+    .nodo:nth-child(2) { animation-delay: 0.2s; }
+    .nodo:nth-child(3) { animation-delay: 0.4s; }
+    .nodo:nth-child(4) { animation-delay: 0.6s; }
+    .nodo:nth-child(5) { animation-delay: 0.8s; }
+    
+    .nodo:hover {
+      transform: scale(1.15) translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      background: linear-gradient(145deg, #fff, #e8f4f8);
+    }
+    
+    .nodo img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 8px;
+      transition: transform 0.3s ease;
+    }
+    
+    .nodo:hover img {
+      transform: rotate(10deg) scale(1.1);
+    }
+    
+    .nodo p {
+      margin: 0;
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .nodo small {
+      font-size: 10px;
+      color: #666;
+      font-weight: normal;
+    }
+    
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    .linea {
+      stroke: #4a90e2;
+      stroke-width: 4;
+      fill: none;
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: dibujar 2s ease-in-out forwards;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+    
+    .linea:nth-child(1) { animation-delay: 1s; }
+    .linea:nth-child(2) { animation-delay: 1.3s; }
+    .linea:nth-child(3) { animation-delay: 1.6s; }
+    
+    @keyframes dibujar {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    
+    @keyframes aparecer {
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    @keyframes pulsar {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .nodo.activo {
+      animation: pulsar 2s infinite ease-in-out;
+    }
+    
+    .titulo {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      opacity: 0;
+      animation: aparecer 1s ease-out 1.5s forwards;
+    }
+    
+    .flecha {
+      position: absolute;
+      font-size: 30px;
+      color: #4a90e2;
+      opacity: 0;
+      animation: aparecer 1s ease-out forwards, mover 2s ease-in-out infinite;
+    }
+    
+    .flecha:nth-child(6) { 
+      top: 60px; 
+      left: 220px; 
+      animation-delay: 1.2s;
+    }
+    .flecha:nth-child(7) { 
+      top: 60px; 
+      left: 480px; 
+      animation-delay: 1.5s;
+    }
+    .flecha:nth-child(8) { 
+      top: 60px; 
+      left: 740px; 
+      animation-delay: 1.8s;
+    }
+    
+    @keyframes mover {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="mapa-container">
+    <div class="titulo">Componentes</div>
+    
+    <svg>
+      <!-- Líneas animadas -->
+      <line class="linea" x1="150" y1="150" x2="280" y2="150" />
+      <line class="linea" x1="410" y1="150" x2="540" y2="150" />
+      <line class="linea" x1="670" y1="150" x2="800" y2="150" />
+    </svg>
+
+    <!-- Nodos -->
+    <div class="nodo" style="top: 75px; left: 75px;">
+      <div>
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Usuario">
+        <p>Usuarios<br><small>Acceden vía web</small></p>
+      </div>
+    </div>
+
+    <div class="nodo" style="top: 75px; left: 280px;">
+      <div>
+        <img src="https://cdn-icons-png.flaticon.com/512/3211/3211455.png" alt="WAF">
+        <p>WAF<br><small>Filtra tráfico malicioso</small></p>
+      </div>
+    </div>
+
+    <div class="nodo" style="top: 75px; left: 485px;">
+      <div>
+        <img src="https://cdn-icons-png.flaticon.com/512/456/456212.png" alt="Servidor">
+        <p>Servidor<br><small>Aloja motor BD</small></p>
+      </div>
+    </div>
+
+    <div class="nodo" style="top: 75px; left: 690px;">
+      <div>
+        <img src="https://cdn-icons-png.flaticon.com/512/4257/4257483.png" alt="BD">
+        <p>Base de Datos<br><small>Devuelve resultado</small></p>
+      </div>
+    </div>
+   
+  </div>
+
+  <script>
+    // Variables globales para las animaciones
+    let animacionActiva = false;
+    let intervaloPulso;
+    let timeoutAnimaciones = [];
+
+    // Función para limpiar todas las animaciones activas
+    function limpiarAnimaciones() {
+      timeoutAnimaciones.forEach(timeout => clearTimeout(timeout));
+      timeoutAnimaciones = [];
+      if (intervaloPulso) {
+        clearInterval(intervaloPulso);
+        intervaloPulso = null;
+      }
+    }
+
+    // Función para crear partículas flotantes
+    function crearParticulas() {
+      for (let i = 0; i < 20; i++) {
+        const particula = document.createElement('div');
+        particula.style.cssText = `
+          position: absolute;
+          width: 3px;
+          height: 3px;
+          background: rgba(255,255,255,0.6);
+          border-radius: 50%;
+          pointer-events: none;
+          top: ${Math.random() * window.innerHeight}px;
+          left: ${Math.random() * window.innerWidth}px;
+          animation: flotar ${3 + Math.random() * 4}s ease-in-out infinite;
+          animation-delay: ${Math.random() * 2}s;
+          z-index: -1;
+        `;
+        document.body.appendChild(particula);
+      }
+    }
+
+    // Agregar keyframes para partículas
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      @keyframes flotar {
+        0%, 100% { 
+          transform: translateY(0px) rotate(0deg); 
+          opacity: 0.6; 
+        }
+        50% { 
+          transform: translateY(-20px) rotate(180deg); 
+          opacity: 1; 
+        }
+      }
+      
+      @keyframes ondaExpansiva {
+        0% { 
+          transform: scale(1); 
+          box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.4);
+        }
+        50% { 
+          transform: scale(1.05); 
+          box-shadow: 0 0 0 20px rgba(74, 144, 226, 0);
+        }
+        100% { 
+          transform: scale(1); 
+          box-shadow: 0 0 0 0 rgba(74, 144, 226, 0);
+        }
+      }
+      
+      @keyframes brillar {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.3) contrast(1.1); }
+      }
+      
+      @keyframes sacudir {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-3px); }
+        75% { transform: translateX(3px); }
+      }
+      
+      @keyframes rebotar {
+        0%, 20%, 60%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-15px); }
+        80% { transform: translateY(-5px); }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // Función para animación en cadena de nodos
+    function animacionCadena() {
+      const nodos = document.querySelectorAll('.nodo');
+      const lineas = document.querySelectorAll('.linea');
+      
+      nodos.forEach(nodo => nodo.classList.remove('activo'));
+      
+      nodos.forEach((nodo, index) => {
+        const timeout1 = setTimeout(() => {
+          nodo.style.animation = 'ondaExpansiva 0.8s ease-out, brillar 1s ease-in-out';
+          nodo.classList.add('activo');
+          
+          // Animar línea correspondiente
+          if (lineas[index]) {
+            lineas[index].style.stroke = '#ff6b6b';
+            lineas[index].style.strokeWidth = '6';
+            
+            const timeout2 = setTimeout(() => {
+              lineas[index].style.stroke = '#4a90e2';
+              lineas[index].style.strokeWidth = '4';
+            }, 800);
+            timeoutAnimaciones.push(timeout2);
+          }
+          
+          const timeout3 = setTimeout(() => {
+            nodo.style.animation = '';
+            nodo.classList.remove('activo');
+          }, 1500);
+          timeoutAnimaciones.push(timeout3);
+          
+        }, index * 600);
+        timeoutAnimaciones.push(timeout1);
+      });
+    }
+
+    // Función para efecto de pulso aleatorio
+    function pulsoAleatorio() {
+      const nodos = document.querySelectorAll('.nodo');
+      const nodoAleatorio = nodos[Math.floor(Math.random() * nodos.length)];
+      
+      nodoAleatorio.style.animation = 'rebotar 1s ease-in-out, brillar 1s ease-in-out';
+      
+      const timeout = setTimeout(() => {
+        nodoAleatorio.style.animation = '';
+      }, 1000);
+      timeoutAnimaciones.push(timeout);
+    }
+
+    // Función para hacer temblar todos los nodos
+    function sacudirNodos() {
+      const nodos = document.querySelectorAll('.nodo');
+      nodos.forEach(nodo => {
+        nodo.style.animation = 'sacudir 0.5s ease-in-out 3';
+        
+        const timeout = setTimeout(() => {
+          nodo.style.animation = '';
+        }, 1500);
+        timeoutAnimaciones.push(timeout);
+      });
+    }
+
+    // Función para efecto de onda en las líneas
+    function ondaLineas() {
+      const lineas = document.querySelectorAll('.linea');
+      lineas.forEach((linea, index) => {
+        const timeout = setTimeout(() => {
+          linea.style.stroke = '#50e3c2';
+          linea.style.strokeWidth = '8';
+          linea.style.filter = 'drop-shadow(0 0 10px #50e3c2)';
+          
+          const timeout2 = setTimeout(() => {
+            linea.style.stroke = '#4a90e2';
+            linea.style.strokeWidth = '4';
+            linea.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))';
+          }, 500);
+          timeoutAnimaciones.push(timeout2);
+          
+        }, index * 150);
+        timeoutAnimaciones.push(timeout);
+      });
+    }
+
+    // Animar nodos individualmente al hacer clic
+    document.querySelectorAll('.nodo').forEach((nodo, index) => {
+      nodo.addEventListener('click', () => {
+        limpiarAnimaciones();
+        
+        // Remover clase activa de todos los nodos
+        document.querySelectorAll('.nodo').forEach(n => {
+          n.classList.remove('activo');
+          n.style.animation = '';
+        });
+        
+        // Efecto especial para el nodo clickeado
+        nodo.style.animation = 'ondaExpansiva 1s ease-out, brillar 2s ease-in-out';
+        nodo.classList.add('activo');
+        
+        // Crear ondas expansivas
+        for (let i = 0; i < 3; i++) {
+          const timeout = setTimeout(() => {
+            nodo.style.boxShadow = `0 0 0 ${20 + i * 15}px rgba(74, 144, 226, ${0.3 - i * 0.1})`;
+            
+            const timeout2 = setTimeout(() => {
+              nodo.style.boxShadow = '';
+            }, 300);
+            timeoutAnimaciones.push(timeout2);
+            
+          }, i * 200);
+          timeoutAnimaciones.push(timeout);
+        }
+        
+        // Animar líneas secuencialmente
+        const timeout3 = setTimeout(() => {
+          const lineas = document.querySelectorAll('.linea');
+          lineas.forEach((linea, i) => {
+            linea.style.animation = 'none';
+            const timeout4 = setTimeout(() => {
+              linea.style.animation = 'dibujar 1s ease-in-out forwards';
+              linea.style.stroke = '#ff6b6b';
+              
+              const timeout5 = setTimeout(() => {
+                linea.style.stroke = '#4a90e2';
+              }, 1000);
+              timeoutAnimaciones.push(timeout5);
+              
+            }, i * 200);
+            timeoutAnimaciones.push(timeout4);
+          });
+        }, 500);
+        timeoutAnimaciones.push(timeout3);
+      });
+    });
+
+    // Efecto de ondas al pasar el mouse
+    document.querySelectorAll('.nodo').forEach(nodo => {
+      nodo.addEventListener('mouseenter', () => {
+        if (!animacionActiva) {
+          nodo.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+          nodo.style.filter = 'brightness(1.1)';
+          
+          // Efecto de partículas alrededor del nodo
+          for (let i = 0; i < 5; i++) {
+            const particula = document.createElement('div');
+            particula.style.cssText = `
+              position: absolute;
+              width: 4px;
+              height: 4px;
+              background: #4a90e2;
+              border-radius: 50%;
+              pointer-events: none;
+              top: ${nodo.offsetTop + 75 + Math.random() * 30 - 15}px;
+              left: ${nodo.offsetLeft + 75 + Math.random() * 30 - 15}px;
+              animation: flotar 1s ease-out forwards;
+              z-index: 10;
+            `;
+            document.body.appendChild(particula);
+            
+            setTimeout(() => particula.remove(), 1000);
+          }
+        }
+      });
+      
+      nodo.addEventListener('mouseleave', () => {
+        if (!animacionActiva) {
+          nodo.style.transition = 'all 0.3s ease';
+          nodo.style.filter = '';
+        }
+      });
+    });
+
+    // Array de funciones de animación
+    const animaciones = [animacionCadena, pulsoAleatorio, sacudirNodos, ondaLineas];
+
+    // Animación automática con diferentes efectos
+    function iniciarAnimacionAutomatica() {
+      intervaloPulso = setInterval(() => {
+        const animacionAleatoria = animaciones[Math.floor(Math.random() * animaciones.length)];
+        animacionAleatoria();
+      }, 4000);
+    }
+
+    // Doble clic para activar secuencia especial
+    document.addEventListener('dblclick', () => {
+      limpiarAnimaciones();
+      animacionActiva = true;
+      
+      // Secuencia completa de animaciones
+      animacionCadena();
+      
+      const timeout1 = setTimeout(() => {
+        ondaLineas();
+      }, 3000);
+      timeoutAnimaciones.push(timeout1);
+      
+      const timeout2 = setTimeout(() => {
+        sacudirNodos();
+      }, 4000);
+      timeoutAnimaciones.push(timeout2);
+      
+      const timeout3 = setTimeout(() => {
+        animacionActiva = false;
+        iniciarAnimacionAutomatica();
+      }, 6000);
+      timeoutAnimaciones.push(timeout3);
+    });
+
+    // Teclas para activar animaciones específicas
+    document.addEventListener('keydown', (e) => {
+      switch(e.key) {
+        case '1':
+          limpiarAnimaciones();
+          animacionCadena();
+          break;
+        case '2':
+          limpiarAnimaciones();
+          pulsoAleatorio();
+          break;
+        case '3':
+          limpiarAnimaciones();
+          sacudirNodos();
+          break;
+        case '4':
+          limpiarAnimaciones();
+          ondaLineas();
+          break;
+        case ' ':
+          e.preventDefault();
+          limpiarAnimaciones();
+          const animacionAleatoria = animaciones[Math.floor(Math.random() * animaciones.length)];
+          animacionAleatoria();
+          break;
+      }
+    });
+
+    // Inicializar
+    crearParticulas();
+    
+    // Esperar a que termine la animación inicial y luego comenzar la automática
+    setTimeout(() => {
+      iniciarAnimacionAutomatica();
+    }, 3000);
+
+    // Animación del título más dinámica
+    const titulo = document.querySelector('.titulo');
+    setInterval(() => {
+      titulo.style.animation = 'brillar 2s ease-in-out';
+      setTimeout(() => {
+        titulo.style.animation = '';
+      }, 2000);
+    }, 8000);
+  </script>
+</body>
+</html>

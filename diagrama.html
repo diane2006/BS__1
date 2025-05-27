@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Esquema Visual Guard Animado</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .diagram {
+      position: relative;
+      width: 800px;
+      height: 400px;
+    }
+
+    .box {
+      position: absolute;
+      width: 220px;
+      /* un poco más ancho para la imagen */
+      height: 70px;
+      background: #005baa;
+      color: white;
+      border-radius: 8px;
+      padding: 10px 10px 10px 60px;
+      /* espacio para la imagen a la izquierda */
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      position: absolute;
+    }
+
+    .box.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Posiciones de los cuadros */
+    #box1 {
+      top: 20px;
+      left: 300px;
+    }
+
+    #box2 {
+      top: 120px;
+      left: 550px;
+    }
+
+    #box3 {
+      top: 120px;
+      left: 50px;
+    }
+
+    #box4 {
+      top: 220px;
+      left: 300px;
+    }
+
+    /* Imagen dentro de cada box */
+    .box img {
+      position: absolute;
+      left: 10px;
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    /* SVG flechas */
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow: visible;
+      width: 800px;
+      height: 400px;
+    }
+
+    path {
+      stroke: #005baa;
+      stroke-width: 3;
+      fill: none;
+      stroke-dasharray: 300;
+      stroke-dashoffset: 300;
+      animation: draw 1.5s forwards;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="diagram DE EJEMPLO">
+    <div class="box" id="box1">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRY-MfOP4uRNNfv-QyRfvy2IXwq6Hna5cISWA&s"
+        alt="Icono 1" />
+      Security Auditing<br>and Monitoring
+    </div>
+    <div class="box" id="box2">
+      <img src="https://cdn-icons-png.freepik.com/256/5715/5715019.png?ga=GA1.1.1873858360.1748207979&semt=ais_hybrid"
+        alt="Icono 2" />
+      Security Alerts<br>by Email
+    </div>
+    <div class="box" id="box3">
+      <img src="https://cdn-icons-png.freepik.com/256/4031/4031259.png?ga=GA1.1.1873858360.1748207979&semt=ais_hybrid"
+        alt="Icono 3" />
+      Sensitive Activity<br>Monitoring
+    </div>
+    <div class="box" id="box4">
+      <img src="https://cdn-icons-png.freepik.com/256/18607/18607659.png?ga=GA1.1.1873858360.1748207979&semt=ais_hybrid"
+        alt="Icono 4" />
+      Auditing<br>Data Access
+    </div>
+
+    <svg>
+      <!-- Flecha de box1 a box2 -->
+      <path style="--delay: 0.5s" d="M 480 55 L 540 55 L 540 120" marker-end="url(#arrow)" />
+      <!-- Flecha de box1 a box3 -->
+      <path style="--delay: 1s" d="M 300 90 L 240 90 L 240 120" marker-end="url(#arrow)" />
+      <!-- Flecha de box1 a box4 -->
+      <path style="--delay: 1.5s" d="M 390 90 L 390 220" marker-end="url(#arrow)" />
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L10,5 L0,10 L2,5 z" fill="#005baa" />
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <script>
+    // Animar la aparición de los cuadros uno a uno
+    const boxes = document.querySelectorAll('.box');
+    boxes.forEach((box, i) => {
+      setTimeout(() => {
+        box.classList.add('visible');
+      }, 500 * (i + 1));
+    });
+  </script>
+
+</body>
+
+</html>+
